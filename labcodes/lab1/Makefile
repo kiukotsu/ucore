@@ -7,6 +7,7 @@ V       := @
 #need llvm/cang-3.5+
 #USELLVM := 1
 # try to infer the correct GCCPREFX
+# The result is `GCCPREFIX := `
 ifndef GCCPREFIX
 GCCPREFIX := $(shell if i386-elf-objdump -i 2>&1 | grep '^elf32-i386$$' >/dev/null 2>&1; \
 	then echo 'i386-elf-'; \
@@ -23,6 +24,7 @@ GCCPREFIX := $(shell if i386-elf-objdump -i 2>&1 | grep '^elf32-i386$$' >/dev/nu
 endif
 
 # try to infer the correct QEMU
+# The result is `QEMU := qemu-system-i386`
 ifndef QEMU
 QEMU := $(shell if which qemu-system-i386 > /dev/null; \
 	then echo 'qemu-system-i386'; exit; \
@@ -38,6 +40,10 @@ QEMU := $(shell if which qemu-system-i386 > /dev/null; \
 endif
 
 # eliminate default suffix rules
+# 默认的后缀列表是:.out, .a, .ln, .o, .c, .cc, .C, .p,
+# .f, .F, .r, .y, .l, .s, .S, .mod, .sym, .def, .h, 
+# .info, .dvi, .tex, .texinfo, .texi,
+# .txinfo, .w, .ch .web, .sh, .elc, .el
 .SUFFIXES: .c .S .h
 
 # delete target files if there is an error (or make is interrupted)
@@ -61,6 +67,7 @@ endif
 CTYPE	:= c S
 
 LD      := $(GCCPREFIX)ld
+# The result is `LDFLAGS := -m elf_i386`
 LDFLAGS	:= -m $(shell $(LD) -V | grep elf_i386 2>/dev/null)
 LDFLAGS	+= -nostdlib
 
