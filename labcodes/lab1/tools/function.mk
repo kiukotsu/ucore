@@ -4,6 +4,12 @@ OBJPREFIX	:= __objs_
 # -------------------- function begin --------------------
 
 # list all files in some directories: (#directories, #types)
+# $(2) = c S
+# $(addprefix %.,$(2)) = %.c %.S
+# $(if $(2),%.c %.S,%) = %.c %.S
+# listf = $(filter %.c %.S, $(wildcard $(1)/*))
+# $(1) is empty, so the listf is empty
+# `wildcard`找到满足pattern的所有文件列表。
 listf = $(filter $(if $(2),$(addprefix %.,$(2)),%),\
 		  $(wildcard $(addsuffix $(SLASH)*,$(1))))
 

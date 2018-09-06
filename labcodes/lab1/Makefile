@@ -93,6 +93,7 @@ TARGETS	:=
 
 include tools/function.mk
 
+# $(1)目录下，满足`%.c %.S`的文件
 listf_cc = $(call listf,$(1),$(CTYPE))
 
 # for cc
