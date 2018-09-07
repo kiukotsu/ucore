@@ -14,18 +14,25 @@ listf = $(filter $(if $(2),$(addprefix %.,$(2)),%),\
 		  $(wildcard $(addsuffix $(SLASH)*,$(1))))
 
 # get .o obj files: (#files[, packet])
+# 确定obj的绝对路径： $(OBJDIR)/$(2)/$(1).o
 toobj = $(addprefix $(OBJDIR)$(SLASH)$(if $(2),$(2)$(SLASH)),\
 		$(addsuffix .o,$(basename $(1))))
 
 # get .d dependency files: (#files[, packet])
+# 结果为： $(OBJDIR)/$(2)/$(1).d
 todep = $(patsubst %.o,%.d,$(call toobj,$(1),$(2)))
 
 totarget = $(addprefix $(BINDIR)$(SLASH),$(1))
 
 # change $(name) to $(OBJPREFIX)$(name): (#names)
+# 结果为：$(OBJPREFIX)$(1)
 packetname = $(if $(1),$(addprefix $(OBJPREFIX),$(1)),$(OBJPREFIX))
 
 # cc compile template, generate rule for dep, obj: (file, cc[, flags, dir])
+# $4：dir 目录
+# $3：flags 编译选项
+# $2：cc 编译命令
+# $1：file 依赖文件
 define cc_template
 $$(call todep,$(1),$(4)): $(1) | $$$$(dir $$$$@)
 	@$(2) -I$$(dir $(1)) $(3) -MM $$< -MT "$$(patsubst %.d,%.o,$$@) $$@"> $$@
