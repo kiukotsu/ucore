@@ -1,4 +1,8 @@
 file bin/kernel
 target remote :1234
-break kern_init
+set architecture i8086
+b *0x7c00
 continue
+x /2i $pc
+# break kern_init
+# continue

@@ -26,10 +26,11 @@ start:
     #  For backwards compatibility with the earliest PCs, physical
     #  address line 20 is tied low, so that addresses higher than
     #  1MB wrap around to zero by default. This code undoes this.
+
 seta20.1:
     inb $0x64, %al                                  # Wait for not busy(8042 input buffer empty).
-    testb $0x2, %al
-    jnz seta20.1
+    testb $0x2, %al                                 # 如果 %al 第低2位为1，则ZF = 0, 则跳转
+    jnz seta20.1                                    # 如果 %al 第低2位为0，则ZF = 1, 则不跳转
 
     movb $0xd1, %al                                 # 0xd1 -> port 0x64
     outb %al, $0x64                                 # 0xd1 means: write data to 8042's P2 port
@@ -42,6 +43,10 @@ seta20.2:
     movb $0xdf, %al                                 # 0xdf -> port 0x60
     outb %al, $0x60                                 # 0xdf = 11011111, means set P2's A20 bit(the 1 bit) to 1
 
+    # 全局描述符表：存放8字节的段描述符，段描述符包含段的属性。
+    # 段选择符：总共16位，高13位用作全局描述符表中的索引位，GDT的第一项总是设为0，
+    #   因此孔断选择符的逻辑地址会被认为是无效的，从而引起一个处理器异常。GDT表项
+    #   最大数目是8191个，即2^13 - 1.
     # Switch from real to protected mode, using a bootstrap GDT
     # and segment translation that makes virtual addresses
     # identical to physical addresses, so that the
