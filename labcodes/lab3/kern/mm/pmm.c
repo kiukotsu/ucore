@@ -207,7 +207,7 @@ page_init(void) {
     cprintf("e820map:\n");
     int i;
     for (i = 0; i < memmap->nr_map; i ++) {
-        uint64_t begin = memmap->map[i].addr, end = begin + memmap->map[i].size;
+        uint64_t begin = memmap->map[i].addr, end = memmap->map[i].addr + memmap->map[i].size;
         cprintf("  memory: %08llx, [%08llx, %08llx], type = %d.\n",
                 memmap->map[i].size, begin, end - 1, memmap->map[i].type);
         if (memmap->map[i].type == E820_ARM) {
@@ -232,7 +232,7 @@ page_init(void) {
     uintptr_t freemem = PADDR((uintptr_t)pages + sizeof(struct Page) * npage);
 
     for (i = 0; i < memmap->nr_map; i ++) {
-        uint64_t begin = memmap->map[i].addr, end = begin + memmap->map[i].size;
+        uint64_t begin = memmap->map[i].addr, end = memmap->map[i].addr + memmap->map[i].size;
         if (memmap->map[i].type == E820_ARM) {
             if (begin < freemem) {
                 begin = freemem;
